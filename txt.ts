@@ -5,13 +5,14 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import Footer from "@/components/providers/Footer";
 
 export default function Home() {
   const { isSignedIn } = useUser();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <header className="flex justify-between items-center px-8 py-4 border-b border-gray-700">
         <h1 className="text-lg md:text-2xl font-bold">ReCodeDitor</h1>
         <nav className="flex items-center gap-4 text-sm md:text-base">
@@ -90,9 +91,7 @@ export default function Home() {
         </motion.div>
       </main>
 
-      <footer className="py-6 text-center text-gray-500 text-sm border-t border-gray-700">
-        © {new Date().getFullYear()} ReCodeDitor. All rights reserved.
-      </footer>
+      <Footer />
     </div>
   );
 }
