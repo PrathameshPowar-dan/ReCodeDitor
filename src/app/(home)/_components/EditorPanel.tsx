@@ -1,4 +1,5 @@
 import React from 'react'
+import RunButton from './RunButton';
 
 async function EditorPanel() {
   return (
@@ -7,12 +8,10 @@ async function EditorPanel() {
         <h2 className="text-lg font-semibold text-gray-200">Code Editor</h2>
         <div className="flex items-center gap-2">
           <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-300 rounded-md">JavaScript</span>
-          <button className="text-xs px-2 py-1 bg-gray-700/50 text-gray-300 rounded-md hover:bg-gray-600/50 transition-colors">
-            Settings
-          </button>
+          <RunButton />
         </div>
       </div>
-      
+
       <div className="bg-gray-900 rounded-lg p-4 h-full overflow-auto">
         <div className="font-mono text-sm text-gray-400">
           <div className="text-gray-500 mb-4">// Start coding here...</div>
