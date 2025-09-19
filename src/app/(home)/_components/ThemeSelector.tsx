@@ -7,18 +7,24 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CircleOff, Cloud, Github, Laptop, Moon, Palette, Sun } from "lucide-react";
 
 const THEME_ICONS: Record<string, React.ReactNode> = {
-    "vs-dark": <Moon className="size-4" />,
-    "vs-light": <Sun className="size-4" />,
-    "github-dark": <Github className="size-4" />,
-    monokai: <Laptop className="size-4" />,
-    "solarized-dark": <Cloud className="size-4" />,
+    "vs-dark": <Moon className="size-3 sm:size-4" />,
+    "vs-light": <Sun className="size-3 sm:size-4" />,
+    "github-dark": <Github className="size-3 sm:size-4" />,
+    monokai: <Laptop className="size-3 sm:size-4" />,
+    "solarized-dark": <Cloud className="size-3 sm:size-4" />,
 };
 
 function ThemeSelector() {
     const [isOpen, setIsOpen] = useState(false)
+    const [isMounted, setIsMounted] = useState(false)
     const { theme, setTheme } = useStore();
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const currentTheme = THEMES.find(t => t.id === theme);
+
+    const currentTheme = THEMES.find(t => t.id === theme) || THEMES[0];
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -30,26 +36,40 @@ function ThemeSelector() {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    if (!isMounted) {
+        return (
+            <div className="relative">
+                <button className="w-20 sm:w-28 group relative flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-2 sm:py-1 bg-[#1e1e2e]/80 rounded-lg border border-gray-800/50">
+                    <Palette className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
+                    <span className="text-gray-300 min-w-[60px] sm:min-w-[80px] text-left text-xs sm:text-sm">
+                        Loading...
+                    </span>
+                    <div className="relative w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-600 bg-gray-600" />
+                </button>
+            </div>
+        )
+    }
+
     return (
         <div className="relative" ref={dropdownRef}>
             <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-28 group relative flex items-center gap-2 px-2 py-1 bg-[#1e1e2e]/80 hover:bg-[#262637] 
+                className="w-26 sm:w-38 h-10 group relative flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-2 sm:py-1 bg-[#1e1e2e]/80 hover:bg-[#262637] 
         rounded-lg transition-all duration-200 border border-gray-800/50 hover:border-gray-700"
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                <Palette className="w-4 h-4 text-gray-400 group-hover:text-gray-300 transition-colors" />
+                <Palette className="w-3 h-3 hidden md:block sm:w-4 sm:h-4 text-gray-400 group-hover:text-gray-300 transition-colors" />
 
-                <span className="text-gray-300 min-w-[80px] text-left group-hover:text-white transition-colors">
+                <span className="text-gray-300 min-w-[60px] sm:min-w-[80px] text-left group-hover:text-white transition-colors text-xs sm:text-sm">
                     {currentTheme?.label}
                 </span>
 
                 <div
-                    className="relative w-4 h-4 rounded-full border border-gray-600 group-hover:border-gray-500 transition-colors"
-                    style={{ background: currentTheme?.color }}
+                    className="relative"
                 />
             </motion.button>
 
@@ -60,7 +80,7 @@ function ThemeSelector() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.96 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 w-full min-w-[240px] bg-[#1e1e2e]/95 
+                        className="absolute top-full left-0 mt-2 w-full min-w-[200px] sm:min-w-[240px] bg-[#1e1e2e]/95 
             backdrop-blur-xl rounded-xl border border-[#313244] shadow-2xl py-2 z-50"
                     >
                         <div className="px-2 pb-2 mb-2 border-b border-gray-800/50">
@@ -74,40 +94,37 @@ function ThemeSelector() {
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: index * 0.1 }}
                                 className={`
-                relative group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[#262637] transition-all duration-200
+                relative group w-full flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-2.5 hover:bg-[#262637] transition-all duration-200
                 ${theme === t.id ? "bg-blue-500/10 text-blue-400" : "text-gray-300"}
               `}
                                 onClick={() => setTheme(t.id)}
                             >
-                                {/* bg gradient */}
+
                                 <div
                                     className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 
               group-hover:opacity-100 transition-opacity"
                                 />
 
-                                {/* icon */}
                                 <div
                                     className={`
-                flex items-center justify-center size-8 rounded-lg
+                flex items-center justify-center size-6 sm:size-8 rounded-lg
                 ${theme === t.id ? "bg-blue-500/10 text-blue-400" : "bg-gray-800/50 text-gray-400"}
                 group-hover:scale-110 transition-all duration-200
               `}
                                 >
-                                    {THEME_ICONS[t.id] || <CircleOff className="w-4 h-4" />}
+                                    {THEME_ICONS[t.id] || <CircleOff className="w-3 h-3 sm:w-4 sm:h-4" />}
                                 </div>
-                                {/* label */}
-                                <span className="flex-1 text-left group-hover:text-white transition-colors">
+
+                                <span className="flex-1 text-left group-hover:text-white transition-colors text-xs sm:text-sm">
                                     {t.label}
                                 </span>
 
-                                {/* color indicator */}
                                 <div
-                                    className="relative size-4 rounded-full border border-gray-600 
+                                    className="relative w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-600 
                 group-hover:border-gray-500 transition-colors"
                                     style={{ background: t.color }}
                                 />
 
-                                {/* active theme border */}
                                 {theme === t.id && (
                                     <motion.div
                                         className="absolute inset-0 border-2 border-blue-500/30 rounded-lg"
