@@ -1,12 +1,13 @@
 import React from 'react'
 import RunButton from './RunButton';
+import ThemeSelector from './ThemeSelector';
 
 async function EditorPanel() {
   return (
     <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 p-4 h-[600px] overflow-hidden">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-200">Code Editor</h2>
         <div className="flex items-center gap-2">
+          <ThemeSelector />
           <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-300 rounded-md">JavaScript</span>
           <RunButton />
         </div>
