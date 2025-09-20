@@ -2,7 +2,7 @@ import React from 'react'
 
 function OutputPanel() {
   return (
-    <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 p-4 h-[600px] overflow-hidden">
+    <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 p-4 h-[500px] sm:h-[480px] overflow-hidden">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-200">Output</h2>
         <div className="flex items-center gap-2">

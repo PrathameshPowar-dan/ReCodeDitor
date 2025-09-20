@@ -47,7 +47,6 @@ function LanguageSelector({ hasAccess }: { hasAccess: boolean }) {
           <span className="text-gray-300 min-w-[60px] sm:min-w-[80px] text-left text-xs sm:text-sm">
             Loading...
           </span>
-          <div className="relative w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-600 bg-gray-600" />
         </button>
       </div>
     )
