@@ -71,7 +71,66 @@ export const useStore = create<CodeEditorState>((set, get) => {
         },
 
         runCode: async () => {
+            const { language, getCode } = get();
 
+            const code = getCode();
+            if (!code.trim()) {
+                set({ error: "Code is empty. Please write some code to run." });
+                return;
+            }
+            set({ isRunning: true, output: "", error: null, executionResult: null });
+
+            try {
+                const runtime = LANGUAGE_CONFIG[language]?.pistonRuntime;
+                const response = await fetch("https://emkc.org/api/v2/piston/execute", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        language: runtime.language,
+                        version: runtime.version,
+                        files: [{ content: code }]
+                    }),
+                });
+
+                const data = await response.json();
+                console.log("Piston Data", data)
+
+                if (data?.message) {
+                    set({ error: data.message, executionResult: { code, output: "", error: data.message } });
+                    return;
+                }
+
+                if (data.compiler && data.compile.code !== 0) {
+                    const error = data.compile.stderr || data.compile.output || "Compilation error";
+                    set({ error, executionResult: { code, output: "", error } });
+                    return;
+                }
+
+                if (data.run && data.run.code !== 0) {
+                    const error = data.run.stderr || data.run.output || "Runtime error";
+                    set({ error, executionResult: { code, output: "", error } });
+                    return;
+                }
+
+                const output = data.run.output;
+
+                set({
+                    output: output.trim(),
+                    error: null,
+                    executionResult: {
+                        code,
+                        output: output.trim(),
+                        error: null
+                    }
+                });
+            } catch (error) {
+                console.error("Error executing code:", error);
+                set({ error: "Error executing code. Please try again." });
+            } finally {
+                set({ isRunning: false });
+            }
         }
     }
 });
