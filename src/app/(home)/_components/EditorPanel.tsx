@@ -8,13 +8,18 @@ import { Editor } from '@monaco-editor/react';
 import { motion } from 'framer-motion';
 import { Palette, RotateCcwIcon, ShareIcon, TypeIcon } from 'lucide-react';
 import { useClerk } from '@clerk/nextjs';
+import { useMutation } from 'convex/react';
+import { api } from '../../../../convex/_generated/api';
 
 function EditorPanel() {
   const clerk = useClerk();
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-  const { language, theme, fontSize, editor, setFontSize, setEditor } = useStore();
+  const { language, theme, fontSize, getCode, editor, setFontSize, setEditor } = useStore();
   const [isMounted, setIsMounted] = useState(false)
   const currentLanguageObj = LANGUAGE_CONFIG[language];
+  const [title, setTitle] = useState("");
+  const [isSharing, setIsSharing] = useState(false);
+  const createSnippet = useMutation(api.snippets.createSnippet)
 
   useEffect(() => {
     const savedCode = localStorage.getItem(`editor-code-${language}`);
@@ -67,8 +72,8 @@ function EditorPanel() {
       <div className="w-full flex items-center justify-between mb-3 sm:mb-4 flex-wrap gap-2">
         <ThemeSelector />
         <div className='flex items-center gap-1 md:gap-3'>
-        <span className="h-fit text-base px-2 py-1 bg-blue-500/20 text-blue-300 rounded-md block">{currentLanguageObj.label}</span>
-        <RunButton />
+          <span className="h-fit text-base px-2 py-1 bg-blue-500/20 text-blue-300 rounded-md block">{currentLanguageObj.label}</span>
+          <RunButton />
         </div>
       </div>
 
@@ -147,7 +152,28 @@ function EditorPanel() {
           </motion.button>
         </div>
       </div>
-
+      {isShareDialogOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-11/12 max-w-md">
+            <h2 className="text-lg font-semibold mb-4">Share Your Code</h2>
+            <p className="text-sm text-gray-600 mb-4">Share your code snippet with others using the link below:</p>
+            <input
+              type="text"
+              // value={shareableLink}
+              readOnly
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setIsShareDialogOpen(false)}
+                className="bg-blue-500 text-white rounded-md px-4 py-2"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

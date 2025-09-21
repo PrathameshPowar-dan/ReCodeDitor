@@ -18,9 +18,9 @@ async function Header() {
   });
 
   return (
-    <div className="relative z-10">
+    <div className="relative z-10 flex justify-center">
       <div
-        className="flex items-center lg:justify-between justify-center backdrop-blur-xl p-6 mb-3 rounded-xl border border-gray-800/50 shadow-lg"
+        className="flex w-[97vw] items-center lg:justify-between justify-center backdrop-blur-xl p-6 mb-3 rounded-xl border border-gray-800/50 shadow-lg"
       >
         <div className='flex items-center gap-0 md:gap-4'>
           <Link href="/" className="flex items-center gap-2 group relative">
@@ -62,7 +62,7 @@ async function Header() {
           </nav>
         </div>
 
-        <div className="flex justify-evenlyly items-center gap-3 md:gap-4">
+        <div className="flex justify-evenly items-center gap-2 md:gap-4">
           <div className="flex items-center pl-2">
             <LanguageSelector hasAccess={Boolean(convexUser?.isPro)} />
           </div>
