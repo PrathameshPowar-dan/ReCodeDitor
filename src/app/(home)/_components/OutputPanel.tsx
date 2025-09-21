@@ -8,12 +8,32 @@ function OutputPanel() {
   const [isCopied, setIsCopied] = useState(false);
 
   const hasContent = true;
+
   const handleCopy = async () => {
     if (!hasContent) return;
-    await navigator.clipboard.writeText(output || error || '');
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
-  }
+    const textToCopy = output || error || '';
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(textToCopy);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = textToCopy;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+  };
 
   return (
     <div className="bg-gray-800/50 flex flex-col backdrop-blur-sm rounded-xl border border-gray-700/50 p-3 sm:p-4 h-[500px] sm:h-[480px] overflow-hidden">
@@ -45,15 +65,15 @@ function OutputPanel() {
       </div>
 
       <div className="h-full bg-gray-900 rounded-lg p-4 overflow-auto font-mono text-sm">
-        <div className="space-y-4 animate-pulse">
+        <div className="space-y-4">
           {isRunning ? (
             <>
-            <div className="space-y-2">
-              <div className="h-4 bg-gray-800/50 rounded w-3/4" />
-              <div className="h-4 bg-gray-800/50 rounded w-1/2" />
-              <div className="h-4 bg-gray-800/50 rounded w-5/6" />
-            </div>
-            <div className="space-y-2 pt-4">
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-800/50 rounded w-3/4" />
+                <div className="h-4 bg-gray-800/50 rounded w-1/2" />
+                <div className="h-4 bg-gray-800/50 rounded w-5/6" />
+              </div>
+              <div className="space-y-2 pt-4">
                 <div className="h-4 bg-gray-800/50 rounded w-2/3" />
                 <div className="h-4 bg-gray-800/50 rounded w-4/5" />
                 <div className="h-4 bg-gray-800/50 rounded w-3/4" />
@@ -61,7 +81,7 @@ function OutputPanel() {
             </>
 
           ) : error ? (
-            <div className="flex items-start gap-3 text-red-400">
+            <div className="flex items-start gap-3 text-red-400 animate-pulse">
               <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-1" />
               <div className="space-y-1">
                 <div className="font-medium">Execution Error</div>

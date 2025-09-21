@@ -72,16 +72,17 @@ export const useStore = create<CodeEditorState>((set, get) => {
 
         runCode: async () => {
             const { language, getCode } = get();
-
             const code = getCode();
-            if (!code.trim()) {
-                set({ error: "Code is empty. Please write some code to run." });
+
+            if (!code) {
+                set({ error: "Please enter some code" });
                 return;
             }
-            set({ isRunning: true, output: "", error: null, executionResult: null });
+
+            set({ isRunning: true, error: null, output: "" });
 
             try {
-                const runtime = LANGUAGE_CONFIG[language]?.pistonRuntime;
+                const runtime = LANGUAGE_CONFIG[language].pistonRuntime;
                 const response = await fetch("https://emkc.org/api/v2/piston/execute", {
                     method: "POST",
                     headers: {
@@ -90,27 +91,42 @@ export const useStore = create<CodeEditorState>((set, get) => {
                     body: JSON.stringify({
                         language: runtime.language,
                         version: runtime.version,
-                        files: [{ content: code }]
+                        files: [{ content: code }],
                     }),
                 });
 
                 const data = await response.json();
-                console.log("Piston Data", data)
 
-                if (data?.message) {
+                console.log("data back from piston:", data);
+
+                if (data.message) {
                     set({ error: data.message, executionResult: { code, output: "", error: data.message } });
                     return;
                 }
 
-                if (data.compiler && data.compile.code !== 0) {
-                    const error = data.compile.stderr || data.compile.output || "Compilation error";
-                    set({ error, executionResult: { code, output: "", error } });
+                if (data.compile && data.compile.code !== 0) {
+                    const error = data.compile.stderr || data.compile.output;
+                    set({
+                        error,
+                        executionResult: {
+                            code,
+                            output: "",
+                            error,
+                        },
+                    });
                     return;
                 }
 
                 if (data.run && data.run.code !== 0) {
-                    const error = data.run.stderr || data.run.output || "Runtime error";
-                    set({ error, executionResult: { code, output: "", error } });
+                    const error = data.run.stderr || data.run.output;
+                    set({
+                        error,
+                        executionResult: {
+                            code,
+                            output: "",
+                            error,
+                        },
+                    });
                     return;
                 }
 
@@ -122,15 +138,18 @@ export const useStore = create<CodeEditorState>((set, get) => {
                     executionResult: {
                         code,
                         output: output.trim(),
-                        error: null
-                    }
+                        error: null,
+                    },
                 });
             } catch (error) {
-                console.error("Error executing code:", error);
-                set({ error: "Error executing code. Please try again." });
+                console.log("Error running code:", error);
+                set({
+                    error: "Error running code",
+                    executionResult: { code, output: "", error: "Error running code" },
+                });
             } finally {
                 set({ isRunning: false });
             }
-        }
+        },
     }
 });
