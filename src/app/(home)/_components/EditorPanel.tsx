@@ -51,13 +51,12 @@ function EditorPanel() {
 
   if (!isMounted) {
     return (
-      <div className="relative">
-        <button className="w-20 sm:w-28 group relative flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-2 sm:py-1 bg-[#1e1e2e]/80 rounded-lg border border-gray-800/50">
+      <div className="bg-gray-800/50 flex items-center justify-center backdrop-blur-sm rounded-xl border border-gray-700/50 p-3 sm:p-4 h-[500px] sm:h-[480px] overflow-hidden">
+        <button className="w-20 sm:w-28 group relative flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-2 sm:py-1 rounded-lg">
           <Palette className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
           <span className="text-gray-300 min-w-[60px] sm:min-w-[80px] text-left text-xs sm:text-sm">
             Loading...
           </span>
-          <div className="relative w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-600 bg-gray-600" />
         </button>
       </div>
     )
