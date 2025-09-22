@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import ConvexClientProvider from "../components/providers/ConvexClientProvider";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +31,11 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white flex flex-col`}
         >
+
           <ConvexClientProvider>
             {children}
           </ConvexClientProvider>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

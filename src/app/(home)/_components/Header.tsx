@@ -4,7 +4,7 @@ import { ConvexHttpClient } from 'convex/browser';
 import { api } from '../../../../convex/_generated/api';
 import HeaderProfileBtn from './HeaderProfileBtn';
 import Link from 'next/link';
-import { Blocks, Code2, Sparkles } from 'lucide-react';
+import { Beer, Blocks, Code2, Sparkles } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 
 
@@ -32,10 +32,10 @@ async function Header() {
               className="relative bg-gradient-to-br from-gray-900 to-gray-800 p-2 rounded-xl ring-1
               ring-white/10 group-hover:ring-blue-500/30 transition-all shadow-md"
             >
-              <Blocks className="size-6 text-blue-400 group-hover:text-blue-300 transform -rotate-6 group-hover:rotate-0 transition-transform duration-500" />
+              <Beer className="size-6 text-orange-500 group-hover:text-green-500 transform -rotate-6 group-hover:rotate-0 transition-transform duration-500" />
             </div>
             <div className="flex flex-col">
-              <span className="hidden md:block text-base md:text-lg font-bold bg-gradient-to-r from-blue-400 via-blue-300 to-purple-400 text-transparent bg-clip-text">
+              <span className="hidden md:block text-base md:text-lg font-bold bg-gradient-to-r from-orange-400 via-white to-green-400 text-transparent bg-clip-text">
                 ReCodeDitor
               </span>
             </div>

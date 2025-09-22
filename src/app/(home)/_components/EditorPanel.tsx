@@ -6,10 +6,11 @@ import { useStore } from "@/store/storeContext"
 import { defineMonacoThemes, LANGUAGE_CONFIG } from '../_constants';
 import { Editor } from '@monaco-editor/react';
 import { motion } from 'framer-motion';
-import { Palette, RotateCcwIcon, ShareIcon, TypeIcon } from 'lucide-react';
+import { Palette, RotateCcwIcon, ShareIcon, TypeIcon, X } from 'lucide-react';
 import { useClerk } from '@clerk/nextjs';
 import { useMutation } from 'convex/react';
 import { api } from '../../../../convex/_generated/api';
+import toast from 'react-hot-toast';
 
 function EditorPanel() {
   const clerk = useClerk();
@@ -19,7 +20,7 @@ function EditorPanel() {
   const currentLanguageObj = LANGUAGE_CONFIG[language];
   const [title, setTitle] = useState("");
   const [isSharing, setIsSharing] = useState(false);
-  const createSnippet = useMutation(api.snippets.createSnippet)
+  const createSnippet = useMutation(api.snippets.createSnippet);
 
   useEffect(() => {
     const savedCode = localStorage.getItem(`editor-code-${language}`);
@@ -52,6 +53,28 @@ function EditorPanel() {
     const newSize = e;
     setFontSize(newSize);
     localStorage.setItem("editor-font-size", newSize.toString());
+  }
+
+  const handleShare = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) {
+      toast.error("Title is required.");
+      return;
+    } else {
+      setIsSharing(true);
+    }
+
+    try {
+      const snippet = await createSnippet({ title, language, code: getCode() });
+      setIsShareDialogOpen(false);
+      setTitle("");
+      toast.success("Snippet shared successfully!");
+    } catch (error) {
+      console.error("Error sharing snippet:", error);
+      toast.error("Failed to share snippet.");
+    } finally {
+      setIsSharing(false);
+    }
   }
 
   if (!isMounted) {
@@ -153,23 +176,34 @@ function EditorPanel() {
         </div>
       </div>
       {isShareDialogOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-11/12 max-w-md">
-            <h2 className="text-lg font-semibold mb-4">Share Your Code</h2>
-            <p className="text-sm text-gray-600 mb-4">Share your code snippet with others using the link below:</p>
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="flex flex-col bg-gray-700 rounded-lg p-6 w-11/12 max-w-md">
+            <div className='flex items-center justify-between mb-4'>
+              <h2 className="text-lg font-semibold ">Share Your Code</h2>
+              <X
+                onClick={() => setIsShareDialogOpen(false)}
+                size={22}
+                className="bg-red-500 text-white rounded-md px-1 py-1"
+              />
+            </div>
             <input
               type="text"
-              // value={shareableLink}
-              readOnly
+              id='title'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder='Snippet Title'
               className="border border-gray-300 rounded-md p-2 w-full"
+              required
             />
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={() => setIsShareDialogOpen(false)}
-                className="bg-blue-500 text-white rounded-md px-4 py-2"
-              >
-                Close
+            <div className="mt-4 flex justify-between">
+              <button type="button" onClick={handleShare}>
+                {isSharing ? (
+                  <span className="bg-blue-500 text-white rounded-md px-4 py-2">Sharing...</span>
+                ) : (
+                  <span className="bg-blue-500 text-white rounded-md px-4 py-2">Share</span>
+                )}
               </button>
+
             </div>
           </div>
         </div>
