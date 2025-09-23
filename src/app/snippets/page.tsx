@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 import { Id } from "../../../convex/_generated/dataModel";
+import StarButton from "@/components/StarButton";
 
 function Page() {
     const { user } = useUser();
@@ -241,8 +242,7 @@ function Page() {
                                 `}
                             >
                                 {filteredSnippets.map((snippet, index) => (
-                                    <Link
-                                        href={`/snippets/${snippet._id}`}
+                                    <div
                                         key={snippet._id}
                                         className={`
                                             group rounded-2xl border transition-all duration-300 overflow-hidden
@@ -267,9 +267,9 @@ function Page() {
                                                 </span>
                                             </div>
 
-                                            <div>
-                                                <StarIcon className="w-4 h-4 text-gray-500" />
-                                            </div>
+
+                                            <StarButton snippetId={snippet._id} />
+
 
                                         </div>
 
@@ -279,7 +279,9 @@ function Page() {
 
                                         <div className="mb-4">
                                             <div className="flex items-center justify-between mb-2">
-                                                <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Code Preview</span>
+                                                <Link
+                                                    href={`/snippets/${snippet._id}`}
+                                                    className="text-xs font-medium text-blue-400 hover:text-blue-600 uppercase tracking-wider">Code Preview</Link>
                                             </div>
                                             <div className="bg-gray-950/80 border border-gray-800 rounded-lg p-3 relative group/code">
                                                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-green-500/5 rounded-lg opacity-0 group-hover/code:opacity-100 transition-opacity" />
@@ -317,7 +319,7 @@ function Page() {
                                             )}
                                         </div>
 
-                                    </Link>
+                                    </div>
                                 ))}
                             </motion.div>
                         )}
