@@ -1,8 +1,6 @@
-import { error } from "console";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { s } from "framer-motion/client";
-import { Languages } from "lucide-react";
+
 
 export default defineSchema({
     users: defineTable({
@@ -40,7 +38,7 @@ export default defineSchema({
 
     stars: defineTable({
         snippetId: v.id("snippets"),
-        userId: v.id("users"),
+        userId: v.string(),
     })
     .index("by_snippet_id", ["snippetId"])
     .index("by_user_id", ["userId"])

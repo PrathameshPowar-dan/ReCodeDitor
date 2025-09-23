@@ -64,4 +64,4 @@ export interface Snippet {
   code: string;
   title: string;
   userName: string;
-}
+};

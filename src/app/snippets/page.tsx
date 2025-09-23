@@ -1,17 +1,24 @@
 "use client"
-import { useQuery } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import NavigationHeader from "@/components/NavHeader";
 import { api } from "../../../convex/_generated/api"
 import { useState } from "react";
 import SnippetsPageSkeleton from "./_components/SnippetsPageSkeleton";
-import { BookOpen, Grid, Layers, Search, Tag, X, Code, User, Calendar } from "lucide-react";
+import { BookOpen, Grid, Layers, Search, Tag, X, Code, User, Calendar, Copy, Star, StarIcon, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
+import toast from "react-hot-toast";
+import { Id } from "../../../convex/_generated/dataModel";
 
 function Page() {
+    const { user } = useUser();
     const snippets = useQuery(api.snippets.getSnippets);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
     const [view, setView] = useState<"grid" | "list">("grid");
+    const deleteSnippet = useMutation(api.snippets.deleteSnippet);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
 
 
     if (snippets === undefined) {
@@ -39,6 +46,20 @@ function Page() {
         return matches && matchesLANG
     })
 
+    const handleDelete = async (snippetId: Id<"snippets">) => {
+        setDeletingId(snippetId);
+
+        try {
+            await deleteSnippet({ snippetId });
+            toast.success("Snippet deleted");
+        } catch (error) {
+            console.log("Error deleting snippet:", error);
+            toast.error("Error deleting snippet");
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black">
             <div className="max-w-[1800px] mx-auto p-4">
@@ -65,7 +86,7 @@ function Page() {
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-orange-400 via-white to-green-400 text-transparent bg-clip-text mb-6"
                     >
-                        Code Snippets
+                        ReCodeDitor Snippets
                     </motion.h1>
 
                     <motion.p
@@ -105,7 +126,7 @@ function Page() {
                         <div className="flex flex-wrap items-center gap-3">
                             <div className="flex items-center gap-2 px-3 py-2 bg-gray-900/50 rounded-xl border border-gray-800">
                                 <Tag className="w-4 h-4 text-orange-400" />
-                                <span className="text-sm text-gray-300">Filter by language:</span>
+                                <span className="text-sm text-gray-300">Languages:</span>
                             </div>
 
                             <div className="flex flex-wrap gap-2">
@@ -220,56 +241,83 @@ function Page() {
                                 `}
                             >
                                 {filteredSnippets.map((snippet, index) => (
-                                    <motion.div
+                                    <Link
+                                        href={`/snippets/${snippet._id}`}
                                         key={snippet._id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: index * 0.1 }}
-                                        whileHover={{ y: -5, scale: 1.02 }}
                                         className={`
-                                            group relative rounded-2xl border transition-all duration-300 overflow-hidden
+                                            group rounded-2xl border transition-all duration-300 overflow-hidden
                                             ${view === "grid"
                                                 ? "bg-gradient-to-br from-gray-900/50 to-gray-950/50 border-gray-800 hover:border-orange-500/30 p-6"
-                                                : "bg-gray-900/30 border-gray-800 hover:border-orange-500/20 p-6"
+                                                : "bg-gray-900/30 border-gray-800 hover:border-orange-300/20 p-6"
                                             }
                                         `}
                                     >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                        <div className="bg-gradient-to-r from-orange-500/5 to-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                                        <div className="relative">
-                                            <div className="flex items-center justify-between mb-3">
-                                                <div className="flex items-center gap-2">
-                                                    <img
-                                                        src={`/${snippet.language}.png`}
-                                                        alt={snippet.language}
-                                                        className="w-6 h-6 object-contain"
-                                                    />
-                                                    <span className="text-sm font-medium text-orange-400 bg-orange-500/10 px-2 py-1 rounded-full">
-                                                        {snippet.language}
-                                                    </span>
-                                                </div>
-                                                <Calendar className="w-4 h-4 text-gray-500" />
+
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div className="flex items-center gap-2">
+                                                <img
+                                                    src={`/${snippet.language}.png`}
+                                                    alt={snippet.language}
+                                                    className="w-6 h-6 object-contain"
+                                                />
+                                                <span className="text-sm font-medium text-orange-400 bg-orange-500/10 px-2 py-1 rounded-full">
+                                                    {snippet.language}
+                                                </span>
                                             </div>
 
-                                            <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">
-                                                {snippet.title}
-                                            </h3>
+                                            <div>
+                                                <StarIcon className="w-4 h-4 text-gray-500" />
+                                            </div>
 
-                                            <p className="text-gray-400 text-sm mb-4 line-clamp-3">
-                                                {snippet.code || "No Code provided"}
-                                            </p>
+                                        </div>
 
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-2 text-sm text-gray-500">
-                                                    <User className="w-4 h-4" />
-                                                    {snippet.userName}
-                                                </div>
-                                                <button className="text-orange-400 hover:text-orange-300 text-sm font-medium transition-colors">
-                                                    View Code →
-                                                </button>
+                                        <h3 className="text-lg font-semibold text-white mb-3 line-clamp-2">
+                                            {snippet.title}
+                                        </h3>
+
+                                        <div className="mb-4">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Code Preview</span>
+                                            </div>
+                                            <div className="bg-gray-950/80 border border-gray-800 rounded-lg p-3 relative group/code">
+                                                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-green-500/5 rounded-lg opacity-0 group-hover/code:opacity-100 transition-opacity" />
+                                                <pre className="text-xs text-gray-300 font-mono relative z-10 overflow-hidden">
+                                                    <code className="line-clamp-4">
+                                                        {snippet.code || "// No code provided"}
+                                                    </code>
+                                                </pre>
+                                                <div className="absolute bottom-0 right-0 left-0 h-8 bg-gradient-to-t from-gray-950/80 to-transparent pointer-events-none" />
                                             </div>
                                         </div>
-                                    </motion.div>
+
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                <User className="w-4 h-4" />
+                                                {snippet.userName}
+                                            </div>
+                                            {user?.id === snippet.userId && (
+                                                <div className="z-10">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            void handleDelete(snippet._id);
+                                                        }}
+                                                        disabled={deletingId === String(snippet._id)}
+                                                        className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 ${deletingId === String(snippet._id) ? "bg-red-500/20 text-red-400 cursor-not-allowed" : "bg-red-500 text-gray-100 hover:bg-red-500/10 hover:text-red-400"}`}>
+                                                        {deletingId === String(snippet._id) ? (
+                                                            <div className="size-3.5 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin" />
+                                                        ) : (
+                                                            <Trash2 className="size-3.5" />
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                    </Link>
                                 ))}
                             </motion.div>
                         )}
