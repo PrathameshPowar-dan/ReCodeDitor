@@ -57,6 +57,13 @@ function EditorPanel() {
 
   const handleShare = async (e: React.FormEvent) => {
     e.preventDefault();
+    const code = getCode();
+
+    if (!code) {
+      toast.error("Code is required.")
+      return;
+    }
+    
     if (!title.trim()) {
       toast.error("Title is required.");
       return;
@@ -65,7 +72,7 @@ function EditorPanel() {
     }
 
     try {
-      const snippet = await createSnippet({ title, language, code: getCode() });
+      const snippet = await createSnippet({ title, language, code: code });
       setIsShareDialogOpen(false);
       setTitle("");
       toast.success("Snippet shared successfully!");

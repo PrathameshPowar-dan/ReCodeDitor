@@ -39,7 +39,7 @@ export default function SnippetsPageSkeleton() {
       <div className="relative max-w-7xl mx-auto px-4 py-12">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-6">
           <div className="w-48 h-8 bg-gray-800 rounded-full mx-auto animate-pulse" />
-          <div className="w-96 h-12 bg-gray-800 rounded-xl mx-auto animate-pulse" />
+          <div className="w-76 h-12 bg-gray-800 rounded-xl mx-auto animate-pulse" />
           <div className="w-72 h-6 bg-gray-800 rounded-lg mx-auto animate-pulse" />
         </div>
 

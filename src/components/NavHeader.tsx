@@ -6,21 +6,21 @@ import Link from "next/link";
 function NavigationHeader() {
   return (
     <div className="relative z-10 flex justify-center">
-      <div className="flex w-[97vw] items-center lg:justify-between justify-center backdrop-blur-xl p-6 mb-3 rounded-xl border border-gray-800/50 shadow-lg">
+      <div className="flex w-[97vw] items-center lg:justify-between justify-between backdrop-blur-xl p-6 mb-3 rounded-xl border border-gray-800/50 shadow-lg">
         <div className="flex items-center gap-0 md:gap-4">
           <Link href="/" className="flex items-center gap-2 group relative">
             <div
               className="absolute -inset-2 bg-gradient-to-r from-orange-600/20 to-green-600/20 rounded-lg opacity-0 
               group-hover:opacity-100 transition-all duration-500 blur-xl"
             />
-            
+
             <div
               className="relative bg-gradient-to-br from-gray-900 to-gray-800 p-2 rounded-xl ring-1
               ring-white/10 group-hover:ring-orange-500/30 transition-all shadow-md"
             >
               <Beer className="size-6 text-orange-500 group-hover:text-green-500 transform -rotate-6 group-hover:rotate-0 transition-transform duration-500" />
             </div>
-            
+
             <div className="flex flex-col">
               <span className="hidden md:block text-base md:text-lg font-bold bg-gradient-to-r from-orange-400 via-white to-green-400 text-transparent bg-clip-text">
                 ReCodeDitor

@@ -57,12 +57,47 @@ export const isSnippetStarred = query({
 });
 
 export const getSnippetStarCount = query({
-    args:{
+    args: {
         snippetId: v.id("snippets")
     },
-    handler: async(ctx,args)=>{
-        const stars = await ctx.db.query("stars").withIndex("by_snippet_id").filter(q=> q.eq(q.field("snippetId"),args.snippetId)).collect();
+    handler: async (ctx, args) => {
+        const stars = await ctx.db.query("stars").withIndex("by_snippet_id").filter(q => q.eq(q.field("snippetId"), args.snippetId)).collect();
 
         return stars.length;
+    }
+});
+
+export const deleteSnippet = mutation({
+    args: {
+        snippetId: v.id("snippets")
+    },
+    handler: async (ctx, args) => {
+        const id = await ctx.auth.getUserIdentity();
+        if (!id) {
+            throw new Error("Not authenticated");
+        };
+
+        const snippet = await ctx.db.get(args.snippetId);
+        if (!snippet) {
+            throw new Error("Snippet not Found")
+        };
+
+        if (snippet.userId !== id.subject) {
+            throw new Error("Not Authorized to delete this Snippet")
+        };
+
+        const comments = await ctx.db.query("snippetComments").withIndex("by_snippet_id").filter(q => q.eq(q.field("snippetId"), args.snippetId)).collect();
+
+        for (const comment of comments) {
+            await ctx.db.delete(comment._id)
+        };
+
+        const stars = await ctx.db.query("stars").withIndex("by_snippet_id").filter(q => q.eq(q.field("snippetId"), args.snippetId)).collect();
+
+        for (const star of stars) {
+            await ctx.db.delete(star._id);
+        };
+
+        await ctx.db.delete(args.snippetId);
     }
 })
