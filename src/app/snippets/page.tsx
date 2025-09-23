@@ -34,7 +34,7 @@ function Page() {
     }
 
     const languages = [...new Set(snippets.map(s => s.language))].sort();
-    const popularLanguages = languages.slice(0, 6);
+    const popularLanguages = languages;
 
     const filteredSnippets = snippets.filter(snip => {
         const matches =
@@ -125,12 +125,12 @@ function Page() {
 
                     <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                         <div className="flex flex-wrap items-center gap-3">
+
+                            <div className="flex flex-wrap gap-1">
                             <div className="flex items-center gap-2 px-3 py-2 bg-gray-900/50 rounded-xl border border-gray-800">
                                 <Tag className="w-4 h-4 text-orange-400" />
                                 <span className="text-sm text-gray-300">Languages:</span>
                             </div>
-
-                            <div className="flex flex-wrap gap-2">
                                 {popularLanguages.map((lang) => (
                                     <motion.button
                                         key={lang}
@@ -140,7 +140,7 @@ function Page() {
                                         className={`
                                             group relative px-4 py-2 rounded-xl transition-all duration-300 flex items-center gap-2
                                             ${selectedLanguage === lang
-                                                ? "text-white bg-gradient-to-r from-orange-500/20 to-green-500/20 border border-orange-500/50 shadow-lg"
+                                                ? "text-white bg-gradient-to-r from-orange-500/20 to-green-500/20 border border-green-400/50 shadow-lg"
                                                 : "text-gray-400 hover:text-white bg-gray-900/50 hover:bg-gray-800 border border-gray-800 hover:border-orange-500/30"
                                             }
                                         `}
@@ -151,13 +151,7 @@ function Page() {
                                             className="w-5 h-5 object-contain filter brightness-125"
                                         />
                                         <span className="text-sm font-medium">{lang}</span>
-                                        {selectedLanguage === lang && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="w-2 h-2 bg-green-400 rounded-full"
-                                            />
-                                        )}
+                                         
                                     </motion.button>
                                 ))}
                             </div>

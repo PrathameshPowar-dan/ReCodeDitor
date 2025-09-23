@@ -48,9 +48,12 @@ export const isSnippetStarred = query({
             return false;
         }
 
-        const star = await ctx.db.query("stars").withIndex("by_snippet_and_user").filter(
-            q => q.eq(q.field("userId"), id.subject) && q.eq(q.field("snippetId"), args.snippetId)
-        ).first();
+        const star = await ctx.db
+            .query("stars")
+            .withIndex("by_snippet_and_user", (q) =>
+                q.eq("snippetId", args.snippetId).eq("userId", id.subject)
+            )
+            .first();
 
         return !!star;
     }
@@ -110,17 +113,29 @@ export const starSnippet = mutation({
         const id = await ctx.auth.getUserIdentity();
         if (!id) {
             throw new Error("Not authenticated");
-        };
+        }
 
-        const existing = await ctx.db.query("stars").withIndex("by_snippet_and_user").filter(q => q.eq(q.field("userId"), id.subject) && q.eq(q.field("snippetId"), args.snippetId)).first();
+        const snippet = await ctx.db.get(args.snippetId);
+        if (!snippet) {
+            throw new Error("Snippet not found");
+        }
+
+        const existing = await ctx.db
+            .query("stars")
+            .withIndex("by_snippet_and_user", (q) =>
+                q.eq("snippetId", args.snippetId).eq("userId", id.subject)
+            )
+            .first();
 
         if (existing) {
-            await ctx.db.delete(existing._id)
+            await ctx.db.delete(existing._id);
+            return { action: "unstarred" };
         } else {
             await ctx.db.insert("stars", {
                 userId: id.subject,
                 snippetId: args.snippetId
             });
-        };
+            return { action: "starred" };
+        }
     }
 });
