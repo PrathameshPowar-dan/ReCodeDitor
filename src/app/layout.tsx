@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ReCodeDitor",
   description: "Web App Code Editor to run any type of Languages.",
+  icons:{
+    icon:"/code.svg"
+  }
 };
 
 export default function RootLayout({

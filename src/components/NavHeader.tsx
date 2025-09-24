@@ -49,8 +49,7 @@ function NavigationHeader() {
           </nav>
         </div>
 
-        <div className="flex justify-evenly items-center gap-2 md:gap-4">
-          <SignedOut>
+        <div className="flex justify-evenly items-center gap-4 md:gap-4">
             <Link
               href="/pricing"
               className="flex flex-row items-center gap-1 px-4 py-2 rounded-lg border border-green-500/30 hover:border-green-400/50 bg-gradient-to-r from-amber-600/10
@@ -62,8 +61,8 @@ function NavigationHeader() {
                 Pro
               </span>
             </Link>
+          <SignedOut>
           </SignedOut>
-
           <HeaderProfileBtn />
         </div>
       </div>
