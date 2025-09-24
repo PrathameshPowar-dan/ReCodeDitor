@@ -104,3 +104,21 @@ export const getUserStats = query({
         };
     },
 });
+
+export const getStarredSnippets = query({
+    args: {
+        userId: v.string()
+    },
+    handler: async (ctx, args) => {
+        const stars = await ctx.db
+            .query("stars")
+            .withIndex("by_user_id")
+            .filter((q) => q.eq(q.field("userId"), args.userId))
+            .collect();
+
+        const snippetIds = stars.map(star => star.snippetId);
+        const snippets = await Promise.all(snippetIds.map(id => ctx.db.get(id)));
+        
+        return snippets.filter(Boolean);
+    }
+});
