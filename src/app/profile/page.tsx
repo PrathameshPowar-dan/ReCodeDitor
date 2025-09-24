@@ -9,6 +9,68 @@ import { useState } from 'react';
 import {
     Zap, Code2, Star, BarChart3, Play, FileCode, User, Calendar, Languages, Crown, Sparkles, Plus, Home, ChevronRight
 } from 'lucide-react';
+import { Id } from '../../../convex/_generated/dataModel';
+
+interface Execution {
+    _id: Id<'codeExecutions'>;
+    _creationTime: number;
+    userId: string;
+    language: string;
+    code: string;
+    output?: string;
+    error?: string;
+}
+
+interface Snippet {
+    _id: Id<'snippets'>;
+    _creationTime: number;
+    userId: string;
+    userName: string;
+    title: string;
+    language: string;
+    code: string;
+}
+
+interface UserStats {
+    totalExecutions: number;
+    languagesCount: number;
+    languages: string[];
+    last24Hours: number;
+    favoriteLanguage: string;
+    languageStats: Record<string, number>;
+    mostStarredLanguage: string;
+}
+
+interface StatBadgeProps {
+    icon: React.ComponentType<{ className?: string }>;
+    value: number;
+    label: string;
+    color: string;
+}
+
+interface StatCardProps {
+    icon: React.ComponentType<{ className?: string }>;
+    label: string;
+    value: string | number;
+    color: string;
+}
+
+interface ExecutionCardProps {
+    execution: Execution;
+}
+
+interface SnippetCardProps {
+    snippet: Snippet;
+    onClick: () => void;
+}
+
+interface EmptyStateProps {
+    icon: React.ComponentType<{ className?: string }>;
+    title: string;
+    description: string;
+    actionLabel: string;
+    onAction: () => void;
+}
 
 function ProfilePage() {
     const router = useRouter();
@@ -19,9 +81,9 @@ function ProfilePage() {
 
     const userStats = useQuery(api.codeExecutions.getUserStats,
         userId ? { userId } : "skip"
-    );
+    ) as UserStats | undefined;
 
-    const starredSnippets = useQuery(api.snippets.getStarredSnippets);
+    const starredSnippets = useQuery(api.snippets.getStarredSnippets) as Snippet[] | undefined;
     console.log(starredSnippets)
 
     const { results: executions, status: executionsStatus, loadMore } = usePaginatedQuery(
@@ -32,7 +94,7 @@ function ProfilePage() {
         { initialNumItems: 5 }
     );
 
-    const userSnippets = useQuery(api.snippets.getSnippets);
+    const userSnippets = useQuery(api.snippets.getSnippets) as Snippet[] | undefined;
     const currentUserSnippets = userSnippets?.filter(snippet => snippet.userId === userId) || [];
 
     if (!isSignedIn) {
@@ -153,13 +215,13 @@ function ProfilePage() {
                                 <StatCard
                                     icon={Crown}
                                     label="Favorite Language"
-                                    value={userStats?.favoriteLanguage.toUpperCase() || 'N/A'}
+                                    value={userStats?.favoriteLanguage?.toUpperCase() || 'N/A'}
                                     color="yellow"
                                 />
                                 <StatCard
                                     icon={Sparkles}
                                     label="Most Starred"
-                                    value={userStats?.mostStarredLanguage.toUpperCase() || 'N/A'}
+                                    value={userStats?.mostStarredLanguage?.toUpperCase() || 'N/A'}
                                     color="purple"
                                 />
                             </div>
@@ -182,7 +244,7 @@ function ProfilePage() {
                                                             <div
                                                                 className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500"
                                                                 style={{
-                                                                    width: `${(count / userStats.totalExecutions) * 100}%`
+                                                                    width: `${(count / (userStats.totalExecutions || 1)) * 100}%`
                                                                 }}
                                                             />
                                                         </div>
@@ -289,7 +351,7 @@ function ProfilePage() {
     );
 }
 
-function StatBadge({ icon: Icon, value, label, color }: { icon: any; value: number; label: string; color: string }) {
+function StatBadge({ icon: Icon, value, label, color }: StatBadgeProps) {
     const colorClasses = {
         blue: 'text-blue-400',
         green: 'text-green-400',
@@ -308,7 +370,7 @@ function StatBadge({ icon: Icon, value, label, color }: { icon: any; value: numb
 }
 
 // Component: Stat Card
-function StatCard({ icon: Icon, label, value, color }: { icon: any; label: string; value: string | number; color: string }) {
+function StatCard({ icon: Icon, label, value, color }: StatCardProps) {
     const colorClasses = {
         blue: 'from-blue-500 to-blue-600',
         green: 'from-green-500 to-green-600',
@@ -332,7 +394,7 @@ function StatCard({ icon: Icon, label, value, color }: { icon: any; label: strin
 }
 
 // Component: Execution Card
-function ExecutionCard({ execution }: { execution: any }) {
+function ExecutionCard({ execution }: ExecutionCardProps) {
     return (
         <div className="bg-gray-900/30 rounded-xl p-3 sm:p-4 border border-gray-600/30 hover:border-gray-500/50 transition-all duration-200 group cursor-pointer">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-3">
@@ -364,7 +426,7 @@ function ExecutionCard({ execution }: { execution: any }) {
 }
 
 // Component: Snippet Card
-function SnippetCard({ snippet, onClick }: { snippet: any; onClick: () => void }) {
+function SnippetCard({ snippet, onClick }: SnippetCardProps) {
     return (
         <div
             className="bg-gray-900/30 rounded-xl p-3 sm:p-4 border border-gray-600/30 hover:border-gray-500/50 transition-all duration-200 group cursor-pointer hover:scale-[1.01]"
@@ -396,7 +458,7 @@ function SnippetCard({ snippet, onClick }: { snippet: any; onClick: () => void }
 }
 
 // Component: Starred Snippet Card
-function StarredSnippetCard({ snippet, onClick }: { snippet: any; onClick: () => void }) {
+function StarredSnippetCard({ snippet, onClick }: SnippetCardProps) {
     return (
         <div
             className="bg-gray-900/30 rounded-xl p-3 sm:p-4 border border-gray-600/30 hover:border-gray-500/50 transition-all duration-200 group cursor-pointer hover:scale-[1.01]"
@@ -434,7 +496,7 @@ function StarredSnippetCard({ snippet, onClick }: { snippet: any; onClick: () =>
 }
 
 // Component: Empty State
-function EmptyState({ icon: Icon, title, description, actionLabel, onAction }: { icon: any; title: string; description: string; actionLabel: string; onAction: () => void }) {
+function EmptyState({ icon: Icon, title, description, actionLabel, onAction }: EmptyStateProps) {
     return (
         <div className="text-center py-8 sm:py-12 text-gray-400">
             <div className="w-16 h-16 mx-auto mb-4 bg-gray-800/50 rounded-full flex items-center justify-center border border-gray-600/30">

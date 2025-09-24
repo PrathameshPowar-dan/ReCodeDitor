@@ -72,7 +72,7 @@ function EditorPanel() {
     }
 
     try {
-      const snippet = await createSnippet({ title, language, code: code });
+      await createSnippet({ title, language, code: code });
       setIsShareDialogOpen(false);
       setTitle("");
       toast.success("Snippet shared successfully!");

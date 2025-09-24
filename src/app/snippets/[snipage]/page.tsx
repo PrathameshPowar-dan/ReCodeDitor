@@ -155,7 +155,7 @@ function Snipage() {
                                 </svg>
                             </div>
                             <h1 className="text-2xl font-bold text-white mb-2">Snippet Not Found</h1>
-                            <p className="text-gray-400 mb-6">The snippet you're looking for doesn't exist or has been deleted.</p>
+                            <p className="text-gray-400 mb-6">The snippet you&apos;re looking for doesn&apos;t exist or has been deleted.</p>
                             <button
                                 onClick={() => router.push('/snippets')}
                                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition-colors duration-200 transform hover:scale-105"

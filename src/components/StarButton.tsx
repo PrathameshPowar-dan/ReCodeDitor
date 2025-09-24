@@ -6,7 +6,7 @@ import { Star } from "lucide-react";
 import { useState } from "react";
 
 function StarButton({ snippetId }: { snippetId: Id<"snippets"> }) {
-    const { isSignedIn, userId } = useAuth();
+    const { isSignedIn } = useAuth();
 
     const isStarred = useQuery(api.snippets.isSnippetStarred,
         isSignedIn ? { snippetId } : "skip"

@@ -4,13 +4,14 @@ import NavigationHeader from "@/components/NavHeader";
 import { api } from "../../../convex/_generated/api"
 import { useState } from "react";
 import SnippetsPageSkeleton from "./_components/SnippetsPageSkeleton";
-import { BookOpen, Grid, Layers, Search, Tag, X, Code, User, Calendar, Copy, Star, StarIcon, Trash2 } from "lucide-react";
+import { BookOpen, Grid, Layers, Search, Tag, X, Code, User, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 import { Id } from "../../../convex/_generated/dataModel";
 import StarButton from "@/components/StarButton";
+import Image from "next/image";
 
 function Page() {
     const { user } = useUser();
@@ -96,7 +97,7 @@ function Page() {
                         transition={{ delay: 0.2 }}
                         className="text-xl text-gray-300 mb-8 leading-relaxed"
                     >
-                        Discover, share, and collaborate with the community's best code examples
+                        Discover, share, and collaborate with the community&apos;s best code examples
                     </motion.p>
                 </motion.div>
 
@@ -145,7 +146,7 @@ function Page() {
                                             }
                                         `}
                                     >
-                                        <img
+                                        <Image
                                             src={`/${lang}.png`}
                                             alt={lang}
                                             className="w-5 h-5 object-contain filter brightness-125"
@@ -235,7 +236,7 @@ function Page() {
                                     }
                                 `}
                             >
-                                {filteredSnippets.map((snippet, index) => (
+                                {filteredSnippets.map((snippet) => (
                                     <div
                                         key={snippet._id}
                                         className={`
@@ -251,7 +252,7 @@ function Page() {
 
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-2">
-                                                <img
+                                                <Image
                                                     src={`/${snippet.language}.png`}
                                                     alt={snippet.language}
                                                     className="w-6 h-6 object-contain"
