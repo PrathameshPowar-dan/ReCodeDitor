@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🖥️ Online Code Editor  
 
-## Getting Started
+An interactive **web-based code editor** built with **Next.js, React 19, and Monaco Editor**, featuring real-time collaboration, authentication, and a modern UI.
 
-First, run the development server:
+## LIVE PREVIEW
+[Live View](https://re-code-ditor.vercel.app/)
 
+## 🚀 Features  
+
+- ✨ **Code Editing** – Integrated [Monaco Editor](https://microsoft.github.io/monaco-editor/), the same editor behind VS Code.  
+- 🔑 **Authentication** – User login and session management powered by [Clerk](https://clerk.com/).  
+- 📡 **Backend & State** – Real-time database and API handling with [Convex](https://convex.dev/) and global state using [Zustand](https://github.com/pmndrs/zustand).  
+- 🎨 **UI & Animations** – Clean design with [TailwindCSS](https://tailwindcss.com/), icons from [Lucide React](https://lucide.dev/), and animations via [Framer Motion](https://www.framer.com/motion/).  
+- 🔔 **Notifications** – Toast alerts with [react-hot-toast](https://react-hot-toast.com/).  
+- 📩 **Webhooks & Messaging** – Managed using [Svix](https://www.svix.com/).  
+
+## 📂 Tech Stack  
+
+- **Framework**: [Next.js 15](https://nextjs.org/)  
+- **Frontend**: React 19, TailwindCSS 4, Framer Motion  
+- **Editor**: Monaco Editor  
+- **Auth**: Clerk  
+- **State Management**: Zustand  
+- **Backend/Realtime**: Convex  
+- **Icons**: Lucide React  
+
+## ⚡ Getting Started  
+
+### 1. Clone the repository  
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/PrathameshPowar-dan/ReCodeDitor.git
+cd PrathameshPowar-dan/ReCodeDitor
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies  
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Set up environment variables  
+Create a `.env.local` file and add necessary API keys (Clerk, Convex, Svix, etc.):  
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_key_here
+CLERK_SECRET_KEY=your_key_here
+CONVEX_DEPLOYMENT=your_key_here
+SVIX_API_KEY=your_key_here
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run the development server  
+```bash
+npm run dev
+```
 
-## Learn More
+Visit [http://localhost:3000](http://localhost:3000) to view the app.  
 
-To learn more about Next.js, take a look at the following resources:
+### 5. Build for production  
+```bash
+npm run build
+npm start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧹 Linting  
+```bash
+npm run lint
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🤝 Contributing  
+Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to improve.  
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📜 License  
+This project is licensed under the MIT License.  
